@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+  margin: 20px;
+}
+
+.photo-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  gap: 10px;
+  justify-content: center;
+}
+
+.captured-image {
+  width: 150px;
+  height: auto;
+  cursor: pointer;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.captured-image:hover {
+  transform: scale(1.05);
+  border-color: #000;
+}
