@@ -45,7 +45,11 @@ function App() {
         screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
       />
-      <button className="press" onClick={capture}>Capture Photo</button>
+      <div>
+        <button className="Capture" onClick={capture}>Capture Photo</button>
+        <button className="Dockpoints">Dock Points</button>
+      </div>
+      
       <div className="photo-row">
         {images.map((image, index) => (
           <div
