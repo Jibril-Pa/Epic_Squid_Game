@@ -5,6 +5,7 @@ import "./App.css";
 function App() {
   const webcamRef = useRef(null);
   const [images, setImages] = useState([]);
+  const [name, setName] = useState("");
 
   const videoConstraints = {
     width: 300,
@@ -12,17 +13,22 @@ function App() {
     facingMode: "user",
   };
 
-  const capture = useCallback(() => {
-    if (webcamRef.current) {
-      const imageSrc = webcamRef.current.getScreenshot();
-      if (imageSrc) {
-        setImages((prevImages) => [
-          ...prevImages,
-          { src: imageSrc, isGreyedOut: false },
-        ]);
+  const capture = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (webcamRef.current) {
+        const imageSrc = webcamRef.current.getScreenshot();
+        if (imageSrc) {
+          setImages((prevImages) => [
+            ...prevImages,
+            { src: imageSrc, isGreyedOut: false, name: name || `Person ${prevImages.length + 1}` },
+          ]);
+          setName(""); // Clear the input after capture
+        }
       }
-    }
-  }, [webcamRef]);
+    },
+    [webcamRef, name]
+  );
 
   const handleToggleGrey = (index) => {
     setImages((prevImages) =>
@@ -30,7 +36,7 @@ function App() {
         i === index ? { ...img, isGreyedOut: !img.isGreyedOut } : img
       )
     );
-  }
+  };
 
   const handleDelete = (index) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
@@ -46,10 +52,19 @@ function App() {
         videoConstraints={videoConstraints}
       />
       <div>
-        <button className="Capture" onClick={capture}>Capture Photo</button>
+        {/* Removed the form element for simplicity */}
+        <input
+          name="query"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter name"
+        />
+        <button type="button" className="Capture" onClick={capture}>
+          Capture Photo
+        </button>
         <button className="Dockpoints">Dock Points</button>
       </div>
-      
+
       <div className="photo-row">
         {images.map((image, index) => (
           <div
@@ -66,11 +81,14 @@ function App() {
                   filter: image.isGreyedOut ? "grayscale(100%)" : "none",
                 }}
               />
-              <div className="image-number">{index + 1}</div>
-              <button className="delete-button" onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(index);
-              }}>X</button>
+              <div className="person_name">{image.name}</div>
+              <button
+                className="delete-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(index);
+                }}
+              >X</button>
             </div>
             {image.isGreyedOut && <div className="overlay">X</div>}
           </div>
