@@ -1,21 +1,117 @@
-.photo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
-  justify-content: center;
+/* Remove default margins/padding and make body/html fill 100% height */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  /* black background */
+  color: #fff;
+  /* white text to contrast */
+  height: 100%;
+  /* ensure they take up full viewport height */
+}
+
+/* If you wrap everything in .App, ensure it also stretches */
+.App {
+  min-height: 100vh;
+  /* fill at least the entire browser window */
+  background-color: #000;
+  /* black background */
+  color: #fff;
+  /* white text color */
+}
+
+/***************************************************
+ * Webcam / Capture Section
+ ***************************************************/
+.webcam-section {
+  margin-bottom: 30px;
+  /* space below webcam */
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
+.capture-controls {
+  margin-top: 10px;
+}
+
+input {
+  width: 200px;
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.Capture {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/***************************************************
+ * Side Controls: Pinned to Left / Right
+ ***************************************************/
+/* Subtract buttons pinned on the left side of screen */
+.left-controls {
+  position: fixed;
+  left: 20px;
+  /* distance from left edge */
+  top: 50%;
+  /* center vertically */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* space between buttons */
+}
+
+/* Add buttons pinned on the right side of screen */
+.right-controls {
+  position: fixed;
+  right: 20px;
+  /* distance from right edge */
+  top: 50%;
+  /* center vertically */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/***************************************************
+ * Photo Row (Center)
+ ***************************************************/
+.photo-row {
+  /* Add left and right padding or margin so photos 
+     don’t go under the pinned buttons if you want. */
+  margin: 0 80px;
+  /* adjust to your preference */
+
+  display: flex;
+  flex-wrap: wrap;
+  /* wrap if too many images */
+  gap: 20px;
+  /* space between images */
+  justify-content: center;
+}
+
+/* Container for each photo */
 .image-container {
   position: relative;
   width: 150px;
-  height: 150px;
+  cursor: pointer;
 }
 
+.greyed-out .captured-image {
+  filter: grayscale(100%);
+}
+
+/* The actual image + delete button wrapper */
 .image-wrapper {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 150px;
 }
 
 .captured-image {
@@ -25,20 +121,9 @@
   border-radius: 10px;
 }
 
-.image-number {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #0ff;
-  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-}
-
-.greyed-out .captured-image {
-  filter: grayscale(100%);
-}
-
+/***************************************************
+ * Delete Button
+ ***************************************************/
 .delete-button {
   position: absolute;
   top: 5px;
@@ -61,10 +146,45 @@
   background: darkred;
 }
 
-.chart-container {
-  margin-top: 50px;
-  width: 80%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+/***************************************************
+ * Name / Points
+ ***************************************************/
+.person_name {
+  margin-top: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/***************************************************
+ * Buttons (Add / Subtract)
+ ***************************************************/
+.Point_Button_add {
+  background-color: #4CAF50;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  font-size: 100px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.Point_Button_add:hover {
+  background-color: #45a049;
+}
+
+.Point_Button_subtract {
+  background-color: red;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  font-size: 100px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.Point_Button_subtract:hover {
+  background-color: darkred;
 }

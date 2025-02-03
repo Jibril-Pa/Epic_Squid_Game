@@ -13,6 +13,7 @@ function App() {
     facingMode: "user",
   };
 
+  // Capture photo from Webcam
   const capture = useCallback(
     (e) => {
       e.preventDefault();
@@ -21,15 +22,21 @@ function App() {
         if (imageSrc) {
           setImages((prevImages) => [
             ...prevImages,
-            { src: imageSrc, isGreyedOut: false, name: name || `Person ${prevImages.length + 1}` },
+            {
+              src: imageSrc,
+              isGreyedOut: false,
+              name: name || `Person ${prevImages.length + 1}`,
+              points: 0,
+            },
           ]);
-          setName(""); // Clear the input after capture
+          setName("");
         }
       }
     },
     [webcamRef, name]
   );
 
+  // Toggle grayscale on/off
   const handleToggleGrey = (index) => {
     setImages((prevImages) =>
       prevImages.map((img, i) =>
@@ -38,38 +45,106 @@ function App() {
     );
   };
 
+  // Delete an image
   const handleDelete = (index) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
+  // Add points to all active (not greyed out) images
+  const handleAddPoints = (points) => {
+    setImages((prevImages) =>
+      prevImages.map((img) =>
+        !img.isGreyedOut ? { ...img, points: img.points + points } : img
+      )
+    );
+  };
+
+  // Subtract points from all active (not greyed out) images
+  const handleSubtractPoints = (points) => {
+    setImages((prevImages) =>
+      prevImages.map((img) =>
+        !img.isGreyedOut ? { ...img, points: img.points - points } : img
+      )
+    );
   };
 
   return (
     <div className="App">
       <h1>EPIC MOVEMENT SQUID GAME</h1>
-      <Webcam
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints}
-      />
-      <div>
-        {/* Removed the form element for simplicity */}
-        <input
-          name="query"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter name"
+
+      {/* Webcam + capture controls at the top */}
+      <div className="webcam-section">
+        <Webcam
+          audio={false}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          videoConstraints={videoConstraints}
         />
-        <button type="button" className="Capture" onClick={capture}>
-          Capture Photo
-        </button>
-        <button className="Dockpoints">Dock Points</button>
+        <div className="capture-controls">
+          <input
+            name="query"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter name"
+          />
+          <button type="button" className="Capture" onClick={capture}>
+            Capture Photo 📷
+          </button>
+        </div>
       </div>
 
+      {/* Subtract buttons pinned on the left side of the screen */}
+      <div className="left-controls">
+        <button
+          className="Point_Button_subtract"
+          onClick={() => handleSubtractPoints(1)}
+        >
+          -1
+        </button>
+        <button
+          className="Point_Button_subtract"
+          onClick={() => handleSubtractPoints(3)}
+        >
+          -3
+        </button>
+        <button
+          className="Point_Button_subtract"
+          onClick={() => handleSubtractPoints(5)}
+        >
+          -5
+        </button>
+      </div>
+
+      {/* Add buttons pinned on the right side of the screen */}
+      <div className="right-controls">
+        <button
+          className="Point_Button_add"
+          onClick={() => handleAddPoints(1)}
+        >
+          +1
+        </button>
+        <button
+          className="Point_Button_add"
+          onClick={() => handleAddPoints(3)}
+        >
+          +3
+        </button>
+        <button
+          className="Point_Button_add"
+          onClick={() => handleAddPoints(5)}
+        >
+          +5
+        </button>
+      </div>
+
+      {/* Photo row in the center (side-by-side). 
+          You can scroll if there are many pictures, 
+          while buttons remain pinned on the sides. */}
       <div className="photo-row">
         {images.map((image, index) => (
           <div
             key={index}
-            className="image-container"
+            className={`image-container ${image.isGreyedOut ? "greyed-out" : ""}`}
             onClick={() => handleToggleGrey(index)}
           >
             <div className="image-wrapper">
@@ -77,20 +152,20 @@ function App() {
                 src={image.src}
                 alt={`captured-${index}`}
                 className="captured-image"
-                style={{
-                  filter: image.isGreyedOut ? "grayscale(100%)" : "none",
-                }}
               />
-              <div className="person_name">{image.name}</div>
               <button
                 className="delete-button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDelete(index);
                 }}
-              >X</button>
+              >
+                X
+              </button>
             </div>
-            {image.isGreyedOut && <div className="overlay">X</div>}
+            <div className="person_name">
+              {image.name} ({image.points} pts)
+            </div>
           </div>
         ))}
       </div>
